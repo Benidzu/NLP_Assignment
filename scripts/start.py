@@ -1,4 +1,4 @@
-import pandas 
+import pandas as pd
 import json
 import nltk
 import string
@@ -20,7 +20,7 @@ nltk.download("stopwords")
 
 def conan():
 
-    conan_file = open("data/CONAN.json", encoding="utf8")
+    conan_file = open("../data/CONAN.json", encoding="utf8")
 
     data = json.load(conan_file)
 
@@ -53,8 +53,8 @@ def conan():
 
 def sexists():
 
-    benevolent_file = open("data/sexists/benevolent_texts.csv", encoding="utf8")
-    hostile_file = open("data/sexists/hostile_texts.csv", encoding="utf8")
+    benevolent_file = open("../data/sexists/benevolent_texts.csv", encoding="utf8")
+    hostile_file = open("../data/sexists/hostile_texts.csv", encoding="utf8")
     
     benevolent_texts = []
     hostile_texts = []
@@ -78,7 +78,7 @@ def sexists():
 def mmhs150k():
 
     
-    with open('data/MMHS150K/MMHS150K_GT.json','r') as my_file:
+    with open('../data/MMHS150K/MMHS150K_GT.json','r') as my_file:
         tweets = json.load(my_file)
 
     texts = []
@@ -102,22 +102,28 @@ def mmhs150k():
 
     return texts, categories
 
-texts, categories = sexists()
+def iberEval():
+    dfTrain = pd.read_csv("../data/iberEval/en_AMI_TrainingSet.csv", sep=";")
+    mysog_tweets = dfTrain[dfTrain["misogyny_category"] != "0"]
+    return list(mysog_tweets["tweet"]), list(mysog_tweets["misogyny_category"])
 
-stopwords = stopwords.words('english')
-stemmer = SnowballStemmer("english")
-lemmatizer = WordNetLemmatizer()
+if __name__ == '__main__':
+    texts, categories = sexists()
 
-for i in range(0, len(texts)):
-    text = texts[i]
-    text = re.sub("[@]\w+", "", text) # odstranimo tag-anje drugih ljudi v tweetih
-    table = text.maketrans({key: None for key in string.punctuation})
-    text = text.translate(table)      
-    text = re.sub("(http)\w+", "", text) # odstranimo povezave na spletne strani
-    tokens = nltk.word_tokenize(text)
-    tokens = [token for token in tokens if token not in stopwords]
-    generalised = [stemmer.stem(token) for token in tokens]
-    texts[i] = generalised
+    stopwords = stopwords.words('english')
+    stemmer = SnowballStemmer("english")
+    lemmatizer = WordNetLemmatizer()
 
-for i in range(1,50):
-    print(i,texts[i])
+    for i in range(0, len(texts)):
+        text = texts[i]
+        text = re.sub("[@]\w+", "", text) # odstranimo tag-anje drugih ljudi v tweetih
+        table = text.maketrans({key: None for key in string.punctuation})
+        text = text.translate(table)      
+        text = re.sub("(http)\w+", "", text) # odstranimo povezave na spletne strani
+        tokens = nltk.word_tokenize(text)
+        tokens = [token for token in tokens if token not in stopwords]
+        generalised = [stemmer.stem(token) for token in tokens]
+        texts[i] = generalised
+
+    for i in range(1,50):
+        print(i,texts[i])

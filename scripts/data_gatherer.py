@@ -2,7 +2,7 @@ from twitter import get_tweet_text
 from time import sleep
 import datetime
 
-path = "data\sexists\\"
+path = "..\data\sexists\\"
 data_type = "hostile"
 rate_limit = 300
 
