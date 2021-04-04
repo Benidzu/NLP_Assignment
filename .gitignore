@@ -2,3 +2,6 @@
 data/MMHS150k/img_resized
 data/MMHS150k/img_txt
 data/MMHS150k/splits
+
+.vscode/
+__pycache__/
