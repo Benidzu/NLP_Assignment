@@ -2,16 +2,16 @@ from twitter import get_tweet_text
 from time import sleep
 import datetime
 
-path = "..\data\sexists\\"
-data_type = "hostile"
+path = "..\data\\racist\\"
 rate_limit = 300
+delimeter = ','
 
 end = False
 
 while not end:
     
-    tweet_ids_file = open(path+data_type+"_sexist.tsv", "r")
-    tweet_texts = open(path+data_type+"_texts.csv", "r", encoding="utf-8")
+    tweet_ids_file = open(path+"NAACL_SRW_2016.csv", "r")
+    tweet_texts = open(path+"texts.csv", "r", encoding="utf-8")
 
     print("[",datetime.datetime.now(),"] ", "Starting with retrieving tweets")
 
@@ -21,11 +21,15 @@ while not end:
         last_tweet_index += 1
 
     tweet_texts.close()
-    tweet_texts = open(path+data_type+"_texts.csv", "a+", encoding="utf-8")
+    tweet_texts = open(path+"texts.csv", "a+", encoding="utf-8")
 
     tweet_ids = []
+    labels = []
     for line in tweet_ids_file:
-        tweet_ids.append(line.strip())
+        
+        splitted_line = line.split(delimeter)
+        tweet_ids.append(splitted_line[0].strip())
+        labels.append(splitted_line[1].strip())
 
     for i in range(0,rate_limit):
         if i + last_tweet_index >= len(tweet_ids):
@@ -34,7 +38,7 @@ while not end:
             break
         text = get_tweet_text(tweet_ids[last_tweet_index+i])
         text = text.replace("\n"," ")
-        tweet_texts.write("{},{}\n".format(tweet_ids[last_tweet_index+i],text))
+        tweet_texts.write("{},{},{}\n".format(tweet_ids[last_tweet_index+i],text,labels[last_tweet_index+i]))
 
     tweet_ids_file.close()
     tweet_texts.close()
