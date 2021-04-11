@@ -14,7 +14,7 @@ def get_balanced_data(num):
         sample_size = num
         if len(list(relevant[0])) < sample_size:
             sample_size = len(list(relevant[0]))
-
+        
         sampled = relevant.sample(n=sample_size, random_state=1)
         texts += list(sampled[0])
         categories += list(sampled[1])
@@ -23,6 +23,7 @@ def get_balanced_data(num):
     return texts, categories, sources
 
 if __name__ == '__main__':
+    
     a,b,c = get_balanced_data(500)
 
     print(a[350:360])

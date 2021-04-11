@@ -9,60 +9,72 @@ def merge_conan():
     texts, categories = conan()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'conan\n')
 
 def merge_sexists():
     texts, categories = sexists()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
+        if texts[i] == "":
+            continue
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'jha\n')
 
 def merge_iberEval():
     texts, categories = iberEval()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'iberEval\n')
 
 def merge_kaggle():
     texts, categories = kaggle()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'kaggle\n')
 
 def merge_founta():
     texts, categories = founta()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'founta\n')
 
 def merge_hasoc():
     texts, categories = hasoc()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'hasoc\n')
 
 def merge_mmhs150k():
     texts, categories = mmhs150k()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'mmhs150k\n')
 
 def merge_cyberbullying():
     texts, categories = cyberbullying()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'reynolds\n')
 
 def merge_vulgar():
     texts, categories = vulgar()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'cachola\n')
 
 def merge_davidson():
     texts, categories = davidson()
     for i in range(0, len(texts)):
         texts[i] = texts[i].replace("\"", "")
+        texts[i] = texts[i].replace("\n", " ")
         merged_file.write('\"'+texts[i]+'\",'+categories[i]+','+'davidson\n')
 
 def rewrite_data():
