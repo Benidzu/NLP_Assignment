@@ -139,9 +139,12 @@ def print_most_similar_categories(unique_categories):
 
     for i in range(0, len(vectors)):
         print(unique_categories[i], 'is most similiar to: ', end="")
-        min_j = 0
+        min_j = -1
         for j in range(0, len(vectors)):
             if i == j:
+                continue
+            if min_j == -1:
+                min_j = j
                 continue
             if compare_vectors(vectors[i], vectors[min_j]) > compare_vectors(vectors[i], vectors[j]):
                 min_j = j
@@ -153,7 +156,7 @@ print_most_similar_categories(unique_categories)
 """
 Example input of print_most_similar_categories
 
-abusive is most similiar to: abusive
+abusive is most similiar to: discredit
 cyberbullying is most similiar to: sexual_harassment
 discredit is most similiar to: cyberbullying
 hateful is most similiar to: abusive
