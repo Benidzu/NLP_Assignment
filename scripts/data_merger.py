@@ -85,7 +85,7 @@ def rewrite_data():
     merge_iberEval()
     merge_kaggle()
     merge_mmhs150k()
-    merge_sexists()
+    #merge_sexists()
     merge_vulgar()
 
 def inspect_merged_data():
@@ -94,6 +94,7 @@ def inspect_merged_data():
     for s in sez:
         print(s, sez[s])
 
+rewrite_data()
 inspect_merged_data()
 
 merged_file.close()

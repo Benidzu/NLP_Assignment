@@ -1,6 +1,6 @@
 import pandas as pd
 
-def get_balanced_data(num):
+def get_balanced_data(num, ignored_categories=[]):
     df = pd.read_csv('../data/merged_data.csv', header=None)
     category_types = df[1].unique()
 
@@ -9,6 +9,10 @@ def get_balanced_data(num):
     sources = []
 
     for category_type in category_types:
+        
+        if category_type in ignored_categories:
+            continue 
+        
         relevant = df[df[1] == category_type]
         
         sample_size = num
@@ -21,6 +25,7 @@ def get_balanced_data(num):
         sources += list(sampled[2])
 
     return texts, categories, sources
+
 
 if __name__ == '__main__':
     
