@@ -85,7 +85,7 @@ def rewrite_data():
     merge_iberEval()
     merge_kaggle()
     merge_mmhs150k()
-    #merge_sexists()
+    merge_sexists()
     merge_vulgar()
 
 def inspect_merged_data():
