@@ -102,7 +102,8 @@ def compare_vectors(v1, v2):
         score += abs(v1[i] - v2[i])
     return score
 
-tweets,categories,sources = get_balanced_data(5000, ['spam', 'derailing', 'dominance', 'stereotype'])
+tweets,categories,sources = get_balanced_data(5000, ['spam', 'derailing', 'dominance', 'stereotype', 'benevolent sexism'])
+#tweets,categories,sources = get_balanced_data(5000)
 
 for i in range(0,len(tweets)):
     tweets[i] = " ".join(tokenize_and_lemmatize(tweets[i]))
@@ -185,7 +186,7 @@ def build_symetric_matrix(unique_categories):
         for j in range(0, len(vectors)):
             if i == j:
                 continue
-            similarity_matrix[i][j] = sorted_indices[j]
+            similarity_matrix[i][j] = -sorted_indices[j]
 
     print_matrix(similarity_matrix)
 
@@ -223,7 +224,7 @@ def build_similarity_matrix(unique_categories):
         for j in range(0, len(vectors)):
             if i == j:
                 continue
-            similarity_matrix[i][j] = sorted_indices[j]
+            similarity_matrix[i][j] = -sorted_indices[j]
 
     print_matrix(similarity_matrix)
 
@@ -242,7 +243,7 @@ def reorder_matrix(matrix, index):
 
     return matrix
 
-similarity_matrix = build_similarity_matrix(unique_categories) #build_symetric_matrix(unique_categories)
+similarity_matrix = build_symetric_matrix(unique_categories) #build_similarity_matrix(unique_categories) #
 """
 similarity_matrix = [[0, 3, 13, 11, 8, 9, 2, 10, 5, 12, 4, 7, 6],
 [2, 0, 3, 5, 10, 9, 12, 8, 13, 1, 4, 7, 6],
@@ -293,6 +294,8 @@ print(order)
 #print_most_similar_categories(unique_categories)
 print([unique_categories[i] for i in order])
 fig, ax = plt.subplots()
+font = {'size'   : 20, 'weight': 'bold'}
+plt.rc('font', **font)
 heatmap = plt.imshow(similarity_matrix)
 ax.set_yticks(np.arange(len(unique_categories)))
 ax.set_yticklabels([unique_categories[i] for i in order])
@@ -300,7 +303,8 @@ ax.set_xticks(np.arange(len(unique_categories)))
 ax.set_xticklabels([unique_categories[i] for i in order])
 plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
          rotation_mode="anchor")
-plt.colorbar(heatmap)
+fig.tight_layout()
+#plt.colorbar(heatmap)
 plt.show()
 
 """
