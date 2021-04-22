@@ -18,6 +18,7 @@ from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 from sklearn.cluster import AffinityPropagation
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 lemmatizer = WordNetLemmatizer()
 englishwords = stopwords.words('english')
@@ -102,8 +103,8 @@ def compare_vectors(v1, v2):
         score += abs(v1[i] - v2[i])
     return score
 
-tweets,categories,sources = get_balanced_data(5000, ['spam', 'derailing', 'dominance', 'stereotype', 'benevolent sexism'])
-#tweets,categories,sources = get_balanced_data(5000)
+#tweets,categories,sources = get_balanced_data(5000, ['spam', 'derailing', 'dominance', 'stereotype', 'benevolent sexism'])
+tweets,categories,sources = get_balanced_data(5000)
 
 for i in range(0,len(tweets)):
     tweets[i] = " ".join(tokenize_and_lemmatize(tweets[i]))
@@ -230,11 +231,12 @@ def build_similarity_matrix(unique_categories):
 
     return similarity_matrix
 
-def reorder_matrix(matrix, index):
+def reorder_matrix(matrix, index, onlyColumns=False):
     matrix = np.array(matrix)
     for i in range(0, len(index)):
         while i != index[i]:
-            matrix[[i, index[i]],:] = matrix[[index[i], i],:]
+            if not onlyColumns:
+                matrix[[i, index[i]],:] = matrix[[index[i], i],:]
             matrix[:,[i, index[i]]] = matrix[:,[index[i], i]]
             
             temp = index[index[i]]
@@ -243,87 +245,180 @@ def reorder_matrix(matrix, index):
 
     return matrix
 
-similarity_matrix = build_symetric_matrix(unique_categories) #build_similarity_matrix(unique_categories) #
+def visualize(labels, similarity_matrix):
+
+    clustering = AffinityPropagation(random_state=5).fit(similarity_matrix)
+    print(clustering.cluster_centers_indices_)
+    print(clustering.labels_)
+    freqeuncy = {}
+    for i in clustering.labels_:
+        if clustering.cluster_centers_indices_[i] not in freqeuncy:
+            freqeuncy[clustering.cluster_centers_indices_[i]] = 1
+        else:
+            freqeuncy[clustering.cluster_centers_indices_[i]] += 1
+
+    keys = sorted(freqeuncy.keys())
+
+    cumsum = [0]*len(keys)
+
+    for i in range(1, len(keys)):
+        for j in range(0,i):
+            cumsum[i] += freqeuncy[keys[j]]
+
+    order = []
+
+    for i in range(0, len(clustering.labels_)):
+        order.append(cumsum[clustering.labels_[i]])
+        cumsum[clustering.labels_[i]] += 1
+
+    sec_order = np.argsort(order)
+    labels = [labels[i] for i in sec_order]
+    print(order)
+    print(labels)
+    similarity_matrix = reorder_matrix(similarity_matrix, order)
+
+
+    #print_most_similar_categories(unique_categories)
+    fig, ax = plt.subplots()
+    font = {'size'   : 20, 'weight': 'bold'}
+    plt.rc('font', **font)
+    heatmap = plt.imshow(similarity_matrix)
+    ax.set_yticks(np.arange(len(labels)))
+    ax.set_yticklabels(labels)
+    ax.set_xticks(np.arange(len(labels)))
+    ax.set_xticklabels(labels)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+            rotation_mode="anchor")
+    fig.tight_layout()
+    #plt.colorbar(heatmap)
+    plt.show()
+
+def similarity_15x15():
+
+    keywords = ["offensive", "abusive", "cyberbullying", "vulgar", "racist", "homophobic", "profane", "slur", "harrass", "obscene", "threat", "discredit", "hateful", "insult", "hostile"]
+
+    path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
+    model = KeyedVectors.load_word2vec_format(path, binary=True)
+
+    similarity_matrix = [[0 for i in range(0,len(keywords))] for j in range(0,len(keywords))]
+
+    for i in range(0, len(keywords)):
+        for j in range(0, len(keywords)):
+            if keywords[i] in model and keywords[j] in model:
+                similarity_matrix[i][j] = model.similarity(keywords[i], keywords[j])
+            else:
+                print(keywords[i])
+    visualize(keywords, similarity_matrix)
+
+    return similarity_matrix
+
+#similarity_matrix = similarity_15x15()#build_symetric_matrix(unique_categories) #build_similarity_matrix(unique_categories) #
+
+
+def similarity_19x15():
+    keywords = ["offensive", "abusive", "cyberbullying", "vulgar", "racist", "homophobic", "profane", "slur", "harrassment", "obscene", "threat", "discredit", "hateful", "insult", "hostile"]
+
+    path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
+    model = KeyedVectors.load_word2vec_format(path, binary=True)
+
+
+    # zdruzis tweete z isto kategorijo v isti dokument -> dobimo 19 dokumentov
+    uniquecategories = np.unique(categories)
+    tweetsNP = np.array(tweets)
+    tweetsByCategory = []
+    for i in range(len(uniquecategories)):
+        indices = np.where(np.array(categories) == uniquecategories[i])
+        tweetsByCategory.append(" ".join(list(tweetsNP[indices])))
+    uniquecategories = np.array(["benevolent" if c == "benevolent sexism" else "hostile" if c == 'hostile sexism' else "harassment" if c == 'sexual_harassment' else c for c in uniquecategories])
+
+
+    # zgradim tf-idf
+    tfidf_vec3 = TfidfVectorizer(max_df=1.0,
+                        max_features=10000,
+                        min_df=3, 
+                        stop_words=englishwords, 
+                        tokenizer=tokenize_and_lemmatize, 
+                        ngram_range=(1,1))
+
+    tfidf_mat3 = tfidf_vec3.fit_transform(tweetsByCategory)
+
+    documentVectors = np.zeros((300,19))
+    npFeatures = np.array(tfidf_vec3.get_feature_names())
+    for i in range(19):
+        row = np.array(tfidf_mat3.getrow(i).todense()).flatten()
+        indices = row.argsort()[::-1][:30]
+        print(uniquecategories[i], npFeatures[indices])
+        for ix in indices:
+            if npFeatures[ix] in model:
+                documentVectors[:,i] += model[npFeatures[ix]] * row[ix]
+
+    similarity_matrix = [[0 for i in range(0,len(keywords))] for j in range(0,19)]
+
+    for i in range(0, 19):
+        for j in range(0, len(keywords)):
+            if keywords[j] in model:
+                similarity_matrix[i][j] = np.dot(model[keywords[j]], documentVectors[:,i]) / (np.linalg.norm(model[keywords[j]]) * np.linalg.norm(documentVectors[:,i]))
+            else:
+                print(keywords[i])
+    
+    print("Most similar words:")
+    topN = []
+    for i in range(0,15):
+        print(keywords[i], np.array(unique_categories)[np.argsort(np.transpose(np.transpose(similarity_matrix)[i]))[-3:]])
+
+
+    clustering = AffinityPropagation(random_state=5).fit(np.transpose(np.array(similarity_matrix)))
+        
+    freqeuncy = {}
+    for i in clustering.labels_:
+        if clustering.cluster_centers_indices_[i] not in freqeuncy:
+            freqeuncy[clustering.cluster_centers_indices_[i]] = 1
+        else:
+            freqeuncy[clustering.cluster_centers_indices_[i]] += 1
+
+    keys = sorted(freqeuncy.keys())
+
+    cumsum = [0]*len(keys)
+
+    for i in range(1, len(keys)):
+        for j in range(0,i):
+            cumsum[i] += freqeuncy[keys[j]]
+
+    order = []
+
+    for i in range(0, len(clustering.labels_)):
+        order.append(cumsum[clustering.labels_[i]])
+        cumsum[clustering.labels_[i]] += 1
+
+    sec_order = np.argsort(order)
+
+    print(order)
+
+    similarity_matrix = reorder_matrix(similarity_matrix, order, onlyColumns=True)
+
+    fig, ax = plt.subplots()
+    heatmap = plt.imshow(similarity_matrix)
+    ax.set_xticks(np.arange(len(keywords)))
+    ax.set_xticklabels([keywords[i] for i in sec_order])
+    ax.set_yticks(np.arange(len(uniquecategories)))
+    ax.set_yticklabels(uniquecategories)
+    plt.ylabel('Data categories', fontdict={'size': 15})
+    plt.xlabel('Terms', fontdict={'size': 15})
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+            rotation_mode="anchor")
+    fig.tight_layout()
+    #plt.colorbar(heatmap)
+    plt.show()
+
+similarity_15x15()
+#similarity_15x15()
 """
-similarity_matrix = [[0, 3, 13, 11, 8, 9, 2, 10, 5, 12, 4, 7, 6],
-[2, 0, 3, 5, 10, 9, 12, 8, 13, 1, 4, 7, 6],
-[3, 2, 0, 5, 9, 10, 12, 1, 8, 13, 4, 7, 6],
-[4, 1, 8, 0, 7, 12, 6, 3, 9, 11, 5, 2, 10],
-[5, 2, 9, 11, 0, 3, 12, 8, 1, 13, 4, 7, 6],
-[6, 7, 4, 12, 8, 0, 1, 3, 9, 11, 2, 10, 5],
-[7, 6, 4, 13, 12, 8, 0, 9, 3, 10, 11, 2, 5],
-[8, 3, 12, 11, 1, 2, 10, 0, 5, 9, 4, 7, 6],
-[9, 11, 5, 2, 10, 3, 12, 1, 0, 8, 4, 7, 6],
-[10, 11, 2, 5, 9, 3, 12, 8, 13, 0, 4, 7, 6],
-[11, 2, 3, 10, 9, 5, 12, 8, 1, 13, 0, 7, 6],
-[12, 11, 3, 2, 10, 5, 8, 9, 13, 1, 4, 0, 6],
-[13, 3, 1, 11, 10, 8, 2, 12, 9, 5, 4, 7, 0]]
+path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
+model = KeyedVectors.load_word2vec_format(path, binary=True)
+w,e = get_similar_words(model, ["abusive"], 50)
+print(w)
+w,e = get_similar_words(model, ["threat"], 50)
+print(w)
+w,e = get_similar_words(model, ["insult"], 50)
+print(w)
 """
-
-
-
-clustering = AffinityPropagation(random_state=5).fit(similarity_matrix)
-print(clustering.cluster_centers_indices_)
-print(clustering.labels_)
-labels = []
-freqeuncy = {}
-for i in clustering.labels_:
-    if clustering.cluster_centers_indices_[i] not in freqeuncy:
-        freqeuncy[clustering.cluster_centers_indices_[i]] = 1
-    else:
-        freqeuncy[clustering.cluster_centers_indices_[i]] += 1
-
-keys = sorted(freqeuncy.keys())
-
-cumsum = [0]*len(keys)
-
-for i in range(1, len(keys)):
-    for j in range(0,i):
-        cumsum[i] += freqeuncy[keys[j]]
-
-order = []
-
-for i in range(0, len(clustering.labels_)):
-    order.append(cumsum[clustering.labels_[i]])
-    cumsum[clustering.labels_[i]] += 1
-
-similarity_matrix = reorder_matrix(similarity_matrix, order)
-
-print(order)
-
-#print_most_similar_categories(unique_categories)
-print([unique_categories[i] for i in order])
-fig, ax = plt.subplots()
-font = {'size'   : 20, 'weight': 'bold'}
-plt.rc('font', **font)
-heatmap = plt.imshow(similarity_matrix)
-ax.set_yticks(np.arange(len(unique_categories)))
-ax.set_yticklabels([unique_categories[i] for i in order])
-ax.set_xticks(np.arange(len(unique_categories)))
-ax.set_xticklabels([unique_categories[i] for i in order])
-plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-         rotation_mode="anchor")
-fig.tight_layout()
-#plt.colorbar(heatmap)
-plt.show()
-
-"""
-Example input of print_most_similar_categories
-
-abusive is most similiar to: discredit
-cyberbullying is most similiar to: sexual_harassment
-discredit is most similiar to: cyberbullying
-hateful is most similiar to: abusive
-homophobic is most similiar to: cyberbullying
-insult is most similiar to: obscene
-obscene is most similiar to: insult
-offensive is most similiar to: discredit
-profane is most similiar to: sexual_harassment
-racist is most similiar to: sexual_harassment
-sexual_harassment is most similiar to: cyberbullying
-threat is most similiar to: sexual_harassment
-vulgar is most similiar to: discredit
-"""
-
-
-
