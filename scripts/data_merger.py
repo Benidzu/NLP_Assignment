@@ -94,6 +94,7 @@ def inspect_merged_data():
     for s in sez:
         print(s, sez[s])
 
+rewrite_data()
 inspect_merged_data()
 
 merged_file.close()
