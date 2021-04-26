@@ -20,20 +20,29 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import AffinityPropagation
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-lemmatizer = WordNetLemmatizer()
-englishwords = stopwords.words('english')
-englishwords.extend(["u","rt","im","em","q","na","wan","’","“","”","…"])
+
 
 def tokenize_and_lemmatize(text):
     text = re.sub("[@]\w+", "", text) # remove tags
+    text = re.sub("<user>", "", text, flags=re.IGNORECASE) # remove <USER> tags
+    text = re.sub("<url>", "", text, flags=re.IGNORECASE) # remove <URL> tags
     # remove punctuation
     table = text.maketrans({key: None for key in string.punctuation})
     text = text.translate(table)
     text = re.sub("(http)\w+", "", text) # remove links
     tokens = nltk.word_tokenize(text)
-    tokens = [token for token in tokens if token not in englishwords]
-    lemmas = [lemmatizer.lemmatize(token) for token in tokens]
-    return tokens
+    filtered_tokens = []
+    # Filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation).
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+            filtered_tokens.append(token)
+    #lemmas = [lemmatizer.lemmatize(token) for token in tokens]
+    return filtered_tokens
+
+lemmatizer = WordNetLemmatizer()
+englishwords = stopwords.words('english')
+englishwords.extend(["u","rt","im","em","q","na","wan","’","“","”","…"])
+englishwords.extend(tokenize_and_lemmatize(" ".join(englishwords)))
 
 def get_similar_words(model, categories, n=30):
     embedding_clusters = []
@@ -410,7 +419,7 @@ def similarity_19x15():
     #plt.colorbar(heatmap)
     plt.show()
 
-similarity_15x15()
+similarity_19x15()
 #similarity_15x15()
 """
 path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
