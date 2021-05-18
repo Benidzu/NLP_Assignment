@@ -22,7 +22,7 @@ Additionally, the Colab notebook which can be accessed [here](https://colab.rese
 * ``start.py`` contains code for parsing different datasets.
 * ``data_merger.py`` is a script we used to merge all the data to ``merged_data.csv``.
 * ``data_utils.py`` contains the utilities for sampling the merged data as well as a simple frequency plot.
-* ``data_explore.py`` is script used for exploring out dataset.
+* ``data_explore.py`` is script used for exploring our dataset.
 * ``word2vec_explore.py`` contains our analysis of offensive terms based on word2vec similarities with data.
 
 It should be noted that scripts ``data_gatherer.py``, ``twitter.py``, ``start.py`` and ``data_merger.py`` were needed in order to obtain our dataset present in ``data/merged_data.csv``. But this scripts use data from different datasets and this data is not present in this GitHub repository, since files are too big.  
@@ -42,3 +42,14 @@ conda activate nlp_env
 jupyter notebook
 ```
 Don't forget to trust the notebooks and choose the correct kernel.
+
+3) For the scripts ``data_utils.py``, ``data_explore.py`` and ``word2vec_explore.py``, you can run them simply from the command line:
+```
+python data_utils.py
+
+python data_explore.py
+
+python word2vec_explore.py
+```
+
+4) The additional colab notebook can be accessed [here](https://colab.research.google.com/drive/1xesfr4uBJJs11hAhujwsS79hfOZLYk2A?usp=sharing) 
