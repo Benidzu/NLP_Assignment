@@ -5,6 +5,7 @@ import os
 from gensim.models import KeyedVectors
 from gensim.downloader import base_dir
 from gensim.models.word2vec import Word2Vec
+import gensim.downloader as api
 import pandas as pd
 import numpy as np
 import json
@@ -20,7 +21,9 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import AffinityPropagation
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-
+print("Model will be downloaded if it's not present on local machine")
+model = api.load('word2vec-google-news-300')
+print("Model is ready!")
 
 def tokenize_and_lemmatize(text):
     text = re.sub("[@]\w+", "", text) # remove tags
@@ -81,10 +84,13 @@ def get_indexes(categories, category):
             return start_index, end_index
     return start_index, end_index
 
-def get_word2vec_words(unique_categories):
-    path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
-    model = KeyedVectors.load_word2vec_format(path, binary=True, limit=100000)
 
+    
+    
+def get_word2vec_words(unique_categories):
+    #path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
+    #model = KeyedVectors.load_word2vec_format(path, binary=True, limit=100000)
+    
     return get_similar_words(model, unique_categories)
 
 def train_word2vec_model(name, tweets):
@@ -306,9 +312,6 @@ def similarity_15x15():
 
     keywords = ["offensive", "abusive", "cyberbullying", "vulgar", "racist", "homophobic", "profane", "slur", "harrass", "obscene", "threat", "discredit", "hateful", "insult", "hostile"]
 
-    path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
-    model = KeyedVectors.load_word2vec_format(path, binary=True)
-
     similarity_matrix = [[0 for i in range(0,len(keywords))] for j in range(0,len(keywords))]
 
     for i in range(0, len(keywords)):
@@ -316,7 +319,8 @@ def similarity_15x15():
             if keywords[i] in model and keywords[j] in model:
                 similarity_matrix[i][j] = model.similarity(keywords[i], keywords[j])
             else:
-                print(keywords[i])
+                pass
+                #print(keywords[i])
     visualize(keywords, similarity_matrix)
 
     return similarity_matrix
@@ -326,10 +330,6 @@ def similarity_15x15():
 
 def similarity_19x15():
     keywords = ["offensive", "abusive", "cyberbullying", "vulgar", "racist", "homophobic", "profane", "slur", "harrassment", "obscene", "threat", "discredit", "hateful", "insult", "hostile"]
-
-    path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
-    model = KeyedVectors.load_word2vec_format(path, binary=True)
-
 
     # zdruzis tweete z isto kategorijo v isti dokument -> dobimo 19 dokumentov
     uniquecategories = np.unique(categories)
@@ -401,7 +401,7 @@ def similarity_19x15():
 
     sec_order = np.argsort(order)
 
-    print(order)
+    #print(order)
 
     similarity_matrix = reorder_matrix(similarity_matrix, order, onlyColumns=True)
 
@@ -420,14 +420,5 @@ def similarity_19x15():
     plt.show()
 
 similarity_19x15()
-#similarity_15x15()
-"""
-path = os.path.join(base_dir, 'word2vec-google-news-300', "word2vec-google-news-300.gz")
-model = KeyedVectors.load_word2vec_format(path, binary=True)
-w,e = get_similar_words(model, ["abusive"], 50)
-print(w)
-w,e = get_similar_words(model, ["threat"], 50)
-print(w)
-w,e = get_similar_words(model, ["insult"], 50)
-print(w)
-"""
+similarity_15x15()
+

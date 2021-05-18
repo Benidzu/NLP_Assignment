@@ -57,5 +57,4 @@ def visualize_data():
     plt.show()
 
 if __name__ == '__main__':
-    
     visualize_data()

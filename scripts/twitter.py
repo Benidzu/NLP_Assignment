@@ -1,15 +1,14 @@
 import requests
 import os
 import json
+"""
+Script was modified for our use from the original source: https://github.com/twitterdev/Twitter-API-v2-sample-code/blob/master/Tweet-Lookup/get_tweets_with_bearer_token.py
 
-# https://github.com/twitterdev/Twitter-API-v2-sample-code/blob/master/Tweet-Lookup/get_tweets_with_bearer_token.py
-
-# To set your enviornment variables in your terminal run the following line:
-# export 'BEARER_TOKEN'='<your_bearer_token>'
-
+In order for this script to work, one should replace <your_bearer_token> in auth function with their own private Twitter API bearer token.
+"""
 
 def auth():
-    return "AAAAAAAAAAAAAAAAAAAAAMRFNwEAAAAAt5NFN8Qv4NLe71ahsBpFQ9n8AbY%3DVmBmMqch9m8Np7EIQpYjFQYuvu8DTe3MfMXhgBvFa7nQRR7vMA"
+    return "<your_bearer_token>"
 
 
 def create_url(tweet_id):

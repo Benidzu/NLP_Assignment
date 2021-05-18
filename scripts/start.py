@@ -7,7 +7,6 @@ from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from nltk.corpus import stopwords
 import xml.etree.ElementTree as ET
 
-"""
 nltk.download("averaged_perceptron_tagger")
 nltk.download("maxent_ne_chunker")
 nltk.download("words")
@@ -17,7 +16,6 @@ nltk.download("wordnet")
 nltk.download("tagsets")
 nltk.download('punkt')
 nltk.download("stopwords")
-"""
 
 def conan():
 
@@ -162,7 +160,10 @@ def davidson():
     tweets = dfTrain[dfTrain["class"] == 1]
     return list(tweets["tweet"]), len(list(tweets["tweet"]))*["offensive"]
 
-if __name__ == '__main__':
+def inspect():
+    """
+    This files contains function that parse datasets from different sources (JSON, XML, etc.) in one unified format. Due to the data size those original dataset files are not included in the GitHub repository. Therefore, this function should not be run, unless one has all data saved locally.
+    """
     texts, categories = sexists()
 
     stopwords = stopwords.words('english')
@@ -182,3 +183,5 @@ if __name__ == '__main__':
 
     for i in range(1,50):
         print(i,texts[i])
+
+#inspect()

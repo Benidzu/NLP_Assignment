@@ -25,6 +25,7 @@ for j in range(0, len(unique_categories)):
 
 average_lengths = [lengths[i]/numbers[i] for i in range(0, len(lengths))]
 
+print('Average length of texts per category: ')
 for i in range(0, len(average_lengths)):
     print(unique_categories[i], int(average_lengths[i]))
 
@@ -55,6 +56,7 @@ for j in range(0, len(unique_categories)):
             current_list += tokenize_and_lemmatize(tweets[i])
     processed_list.append(current_list)
 
-
+print()
+print('10 most common words in every category: ')
 for i in range(0, len(processed_list)):
     print(unique_categories[i], Counter(processed_list[i]).most_common(10))

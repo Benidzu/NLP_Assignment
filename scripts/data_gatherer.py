@@ -2,6 +2,11 @@ from twitter import get_tweet_text
 from time import sleep
 import datetime
 
+"""
+This script was used to retrieve data from Twitter. Due to rate limit, script works periodically. It should be noted, that this script was continuously modified through datasets retrieval process, since different datasets stored tweet_ids differently. Therefore it was NOT meant that this script works for every dataset, but only for the last one, which we retrieved. Moreover, in order to run it, user needs to have right dataset files stored locally. 
+
+"""
+
 path = "..\data\\racist\\"
 rate_limit = 300
 delimeter = ','
