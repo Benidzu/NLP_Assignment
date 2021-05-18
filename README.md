@@ -14,7 +14,7 @@ Our main source code is contained in ``scripts/`` and ``notebooks/``
 * ``iberEvalExploration.ipynb`` contains some of our early analysis on the IberEval dataset.
 * ``generalAnalysis.ipynb`` contains some more exploration.
 
-Additionally, the Colab notebook which can be accessed [here]() and requires no additional setup, contains our analysis using BERT and ELMo.
+Additionally, the Colab notebook which can be accessed [here](https://colab.research.google.com/drive/1xesfr4uBJJs11hAhujwsS79hfOZLYk2A?usp=sharing) and requires no additional setup, contains our analysis using BERT and ELMo.
 
 ``scripts/`` contains python scripts, mostly connected to data preparation. Specifically:
 * ``data_gatherer.py``is an early script used for retrieval of tweets.
