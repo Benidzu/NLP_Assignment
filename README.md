@@ -45,6 +45,8 @@ Don't forget to trust the notebooks and choose the correct kernel when attemptin
 
 3) For the scripts ``data_utils.py``, ``data_explore.py`` and ``word2vec_explore.py``, you can run them simply from the command line:
 ```
+cd scripts
+
 python data_utils.py
 
 python data_explore.py
