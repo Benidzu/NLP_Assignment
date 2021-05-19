@@ -2,17 +2,15 @@
 
 ## Repository organization
 
-``data/`` includes data gathered from some of our sources. ``data/merged_data.csv`` is the most important file here, containing merged data from different sources, which is used for our analysis.
+``data/merged_data.csv`` contains merged data gathered from our data sources, which is used for all our analysis. We gathered and organized this data mostly automatically using some scripts as described below. For the purpose of evaluation of our code, the data we prepared suffices and no additional data gathering/preprocessing is required. All data is publicly accessible, for sources refer to the paper.
 
 ``report/`` includes the PDF report file, associated with this repository.
 
 Our main source code is contained in ``scripts/`` and ``notebooks/``
 
-
 ``notebooks/`` contains the main jupyter notebooks used for our analysis.
 * ``generalExploration.ipynb`` contains the majority of our exploration on merged data.
 * ``iberEvalExploration.ipynb`` contains some of our early analysis on the IberEval dataset.
-* ``generalAnalysis.ipynb`` contains some more exploration.
 
 Additionally, the Colab notebook which can be accessed [here](https://colab.research.google.com/drive/1xesfr4uBJJs11hAhujwsS79hfOZLYk2A?usp=sharing) and requires no additional setup, contains our analysis using BERT and ELMo.
 
@@ -25,7 +23,7 @@ Additionally, the Colab notebook which can be accessed [here](https://colab.rese
 * ``data_explore.py`` is script used for exploring our dataset.
 * ``word2vec_explore.py`` contains our analysis of offensive terms based on word2vec similarities with data.
 
-It should be noted that scripts ``data_gatherer.py``, ``twitter.py``, ``start.py`` and ``data_merger.py`` were needed in order to obtain our dataset present in ``data/merged_data.csv``. But these scripts use data from different datasets and this data is not present in this GitHub repository, since files are too big.  
+It should be again noted that scripts ``data_gatherer.py``, ``twitter.py``, ``start.py`` and ``data_merger.py`` were needed in order to obtain our dataset present in ``data/merged_data.csv``. But these scripts use data from different datasets and this data is not present in this GitHub repository, since files are too big.  
 
 ## Environment setup
 
@@ -55,3 +53,5 @@ python word2vec_explore.py
 ```
 
 4) The additional colab notebook can be accessed [here](https://colab.research.google.com/drive/1xesfr4uBJJs11hAhujwsS79hfOZLYk2A?usp=sharing) 
+
+A pre-trained word2vec model is required for evaluation of some parts of code. It will be downloaded automatically if not present.

@@ -1,2 +1,0 @@
-hatespeechtwitter.tab (text/tab-separated-values) 2226944 bytes.
-README.txt (text/plain) 715 bytes.
