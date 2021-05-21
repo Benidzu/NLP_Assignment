@@ -2,9 +2,27 @@
 
 ## Repository organization
 
-``data/merged_data.csv`` contains merged data gathered from our data sources, which is used for all our analysis. We gathered and organized this data mostly automatically using some scripts as described below. For the purpose of evaluation of our code, the data we prepared suffices and no additional data gathering/preprocessing is required. All data is publicly accessible, for sources refer to the paper.
+### Data
+
+``data/merged_data.csv`` contains merged data gathered from our data sources, which is used for all our analysis. We gathered and organized this data mostly automatically using some scripts as described below. For the purpose of evaluation of our code, this data we prepared and included suffices and no additional data gathering/preprocessing is required. All the gathered data is publicly accessible, we list the sources in the following table, as well as in the report.
+
+| Dataset | source  | 
+| :---:   | :-: | 
+| Davidson | https://github.com/t-davidson/hate-speech-and-offensive-language |
+| Reynolds | https://www.chatcoder.com/data.html |
+| Founta | https://github.com/ENCASEH2020/hatespeech-twitter |
+| Mandl | https://hasocfire.github.io/hasoc/2019/dataset.html |
+| Cachola | https://github.com/ericholgate/VulgarFunctionsTwitter |
+| Kaggle | https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data |
+| Fersini | https://amiibereval2018.wordpress.com/important-dates/data/ |
+| Gomez | https://gombru.github.io/2019/10/09/MMHS/ |
+| Jha | https://github.com/AkshitaJha/NLP_CSS_2017 |
+
+### Report
 
 ``report/`` includes the PDF report file, associated with this repository.
+
+### Source code
 
 Our main source code is contained in ``scripts/`` and ``notebooks/``
 
@@ -23,7 +41,7 @@ Additionally, the Colab notebook which can be accessed [here](https://colab.rese
 * ``data_explore.py`` is script used for exploring our dataset.
 * ``word2vec_explore.py`` contains our analysis of offensive terms based on word2vec similarities with data.
 
-It should be again noted that scripts ``data_gatherer.py``, ``twitter.py``, ``start.py`` and ``data_merger.py`` were needed in order to obtain our dataset present in ``data/merged_data.csv``. But these scripts use data from different datasets and this data is not present in this GitHub repository, since files are too big.  
+It should be again noted that scripts ``data_gatherer.py``, ``twitter.py``, ``start.py`` and ``data_merger.py`` were needed in order to obtain our dataset present in ``data/merged_data.csv``. But these scripts use data from different datasets which are not present in this GitHub repository, since files are too big. For the original data sources refer to the Data section above.  
 
 ## Environment setup
 
@@ -35,7 +53,7 @@ conda env create -f env.yml
 
 conda activate nlp_env
 ```
-2) Using VSCode, or any other IDE, or the installed jupyter library directly, access the notebooks, e.g.:
+2) Using VSCode, or any other IDE, or the installed jupyter library and your web browser, access the notebooks from ``notebooks/``. For example using the jupyter library, launch the server and follow the instructions from the terminal via:
 ```
 jupyter notebook
 ```
